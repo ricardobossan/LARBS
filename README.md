@@ -1,4 +1,14 @@
-# Luke's Auto-Rice Bootstrapping Scripts (LARBS)
+# ~~Luke's~~ ricardobossan's Auto-Rice Bootstrapping Scripts (LARBS)
+
+## This script uses ricardobossan's fork of voidrice
+
+`./static/larbs.sh`:
+
+```bash
+#...
+dotfilesrepo="https://github.com/ricardobossan/voidrice.git"
+#...
+```
 
 ## Installation:
 
