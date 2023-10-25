@@ -126,9 +126,37 @@ manualinstall() {
 }
 
 maininstall() {
-	# Installs all needed programs from main repo.
-	whiptail --title "LARBS Installation" --infobox "Installing \`$1\` ($n of $total). $1 $2" 9 70
-	installpkg "$1"
+  local package="$1"
+  local description="$2"
+
+  # Define a dictionary of packages and their corresponding versions
+  declare -A package_versions
+  package_versions["neovim"]="0.9.2-1"
+  #package_versions["example_package"]="1.2.3-1"
+
+  if [ "${package_versions[$package]}" ]; then
+    # If the package is in the dictionary, install the specified version
+    whiptail --title "LARBS Installation" --infobox "Installing $package ${package_versions[$package]} ($n of $total). $package $description" 9 70
+
+    # Check if the package is already in the ignore list in pacman.conf
+    if ! grep -q "^IgnorePkg *= *$package" /etc/pacman.conf; then
+      # Add the package to the ignore list
+      echo "IgnorePkg = $package" | sudo tee -a /etc/pacman.conf
+    fi
+
+    # Install the specified version
+    sudo -u "$name" yay -S --noconfirm "$package=${package_versions[$package]}"
+  else
+    # For other packages, check if they are already in the ignore list
+    if ! grep -q "^IgnorePkg *= *$package" /etc/pacman.conf; then
+      # Add the package to the ignore list
+      echo "IgnorePkg = $package" | sudo tee -a /etc/pacman.conf
+    fi
+
+    # Install other packages using pacman
+    whiptail --title "LARBS Installation" --infobox "Installing \`$package\` ($n of $total). $package $description" 9 70
+    installpkg "$package"
+  fi
 }
 
 gitmakeinstall() {
